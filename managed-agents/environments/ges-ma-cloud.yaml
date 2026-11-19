@@ -1,0 +1,9 @@
+# Cloud sandbox where the GES M&A agents run.
+# Unrestricted networking lets the agents research any target's public website.
+# To lock it down, switch to `limited` and list approved hosts in allowed_hosts
+# (with limited networking, allowed_hosts also limits web_search and web_fetch).
+name: ges-ma-cloud
+config:
+  type: cloud
+  networking:
+    type: unrestricted

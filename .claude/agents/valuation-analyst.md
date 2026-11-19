@@ -2,7 +2,8 @@
 name: valuation-analyst
 description: "Valuation and deal-modeling analyst. Use to estimate what a target is worth and what GES should pay: EBITDA multiples, comparable companies and precedent deals, DCF, LBO and accretion analysis, earn-out scenarios, synergy value, and sensitivity tables."
 tools: Read, Grep, Glob, Write, Bash, WebSearch, WebFetch
-model: opus
+model: claude-opus-5-5
+effort: high
 color: green
 ---
 

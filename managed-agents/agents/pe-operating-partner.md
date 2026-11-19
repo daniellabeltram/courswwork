@@ -3,7 +3,7 @@
 name: GES Private Equity Operating Partner
 description: Private equity buy-and-build expert representing Truelink Capital's view. Use for value-creation plans, how a deal affects GES's eventual exit, debt capacity, return metrics (MOIC/IRR), and board or sponsor reporting.
 model:
-  id: claude-opus-5-5
+  id: claude-sonnet-5-5
   effort: high
 tools:
 - type: agent_toolset_20260401

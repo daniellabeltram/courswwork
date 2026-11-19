@@ -2,7 +2,8 @@
 name: integration-lead
 description: "Post-merger integration (PMI) leader. Use for Day 1 readiness, 100-day plans, deciding whether to keep a target stand-alone or fold it in, synergy tracking, key-person retention, client and employee communications, and systems integration."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-sonnet-5-5
+effort: high
 color: orange
 ---
 

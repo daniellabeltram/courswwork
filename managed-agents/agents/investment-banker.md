@@ -3,7 +3,7 @@
 name: GES Investment Banker / M&A Advisor
 description: M&A process and negotiation advisor. Use for how to approach a target or founder, proprietary vs. auction processes, non-binding offer and letter-of-intent terms, exclusivity, deal timelines, negotiation tactics, and how sellers and their bankers think.
 model:
-  id: claude-opus-5-5
+  id: claude-sonnet-5-5
   effort: high
 tools:
 - type: agent_toolset_20260401

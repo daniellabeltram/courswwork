@@ -3,8 +3,8 @@
 name: GES Deal Sourcing & Market Research Analyst
 description: Target identification and market research analyst. Use to find and screen acquisition targets, build market maps by category and region, write standard target profiles for the M&A app, score strategic fit, and track signals that a company may be for sale.
 model:
-  id: claude-opus-5-5
-  effort: high
+  id: claude-sonnet-5-5
+  effort: medium
 tools:
 - type: agent_toolset_20260401
   default_config:

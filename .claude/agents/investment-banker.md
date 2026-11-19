@@ -2,7 +2,8 @@
 name: investment-banker
 description: "M&A process and negotiation advisor. Use for how to approach a target or founder, proprietary vs. auction processes, non-binding offer and letter-of-intent terms, exclusivity, deal timelines, negotiation tactics, and how sellers and their bankers think."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-sonnet-5-5
+effort: high
 color: cyan
 ---
 

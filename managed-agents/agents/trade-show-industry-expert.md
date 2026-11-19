@@ -3,7 +3,7 @@
 name: GES Trade Show & Exhibition Industry Expert
 description: Exhibition industry veteran covering general service contractor operations and the organizer and venue side. Use to assess contractor targets, show-organizer contracts and renewal risk, venue relationships, pricing, freight and warehousing, show rotation, competitors, and international exhibition markets.
 model:
-  id: claude-opus-5-5
+  id: claude-sonnet-5-5
   effort: high
 tools:
 - type: agent_toolset_20260401

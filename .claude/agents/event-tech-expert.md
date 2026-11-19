@@ -2,7 +2,8 @@
 name: event-tech-expert
 description: "Event technology and data specialist. Use to assess software and data targets (registration, lead retrieval, floor-plan and booth sales, housing, attendee analytics), SaaS metrics, build vs. buy vs. partner decisions, technical due diligence, and data privacy exposure."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-sonnet-5-5
+effort: high
 color: cyan
 ---
 

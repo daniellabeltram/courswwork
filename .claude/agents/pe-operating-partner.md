@@ -2,7 +2,8 @@
 name: pe-operating-partner
 description: "Private equity buy-and-build expert representing Truelink Capital's view. Use for value-creation plans, how a deal affects GES's eventual exit, debt capacity, return metrics (MOIC/IRR), and board or sponsor reporting."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-sonnet-5-5
+effort: high
 color: blue
 ---
 

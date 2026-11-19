@@ -2,7 +2,8 @@
 name: employment-benefits-counsel
 description: "Employment, labor law and employee benefits specialist. Use for union successorship, multiemployer pension withdrawal liability, layoff notice rules (WARN), worker classification, non-compete enforceability by state and country, retention and earn-out employment terms, benefit plan harmonization, and UK TUPE employee transfers."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-opus-5-5
+effort: high
 color: blue
 ---
 

@@ -2,7 +2,8 @@
 name: deal-sourcing-analyst
 description: "Target identification and market research analyst. Use to find and screen acquisition targets, build market maps by category and region, write standard target profiles for the M&A app, score strategic fit, and track signals that a company may be for sale."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-sonnet-5-5
+effort: medium
 color: purple
 ---
 

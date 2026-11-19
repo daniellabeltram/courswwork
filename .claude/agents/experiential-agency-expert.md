@@ -2,7 +2,8 @@
 name: experiential-agency-expert
 description: "Experiential marketing agency and exhibit-builder specialist (the Spiro side of GES). Use to assess agency and exhibit-house targets: staff utilization, fee vs. pass-through revenue, retainers vs. projects, client concentration, creative talent retention, fabrication capacity and rental assets."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-sonnet-5-5
+effort: high
 color: pink
 ---
 

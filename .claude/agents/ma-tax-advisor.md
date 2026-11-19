@@ -2,7 +2,8 @@
 name: ma-tax-advisor
 description: "Transaction tax specialist. Use for deal structure (asset vs. stock purchase, step-ups, rollover equity), earn-out tax treatment, tax diligence exposures, sales and use tax on event services across states, and cross-border tax for targets in the UK, Canada, the Middle East and India."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-opus-5-5
+effort: high
 color: yellow
 ---
 

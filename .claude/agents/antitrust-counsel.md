@@ -2,7 +2,8 @@
 name: antitrust-counsel
 description: "Antitrust and merger-control specialist. Use whenever GES considers buying a competitor or a company with overlapping services: pre-merger filing requirements (HSR and foreign regimes), market definition and overlap analysis by city and venue, gun-jumping, and clean-team rules for sharing competitively sensitive data."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-opus-5-5
+effort: high
 color: yellow
 ---
 

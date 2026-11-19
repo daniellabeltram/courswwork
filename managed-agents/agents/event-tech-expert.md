@@ -3,7 +3,7 @@
 name: GES Event Technology Expert
 description: Event technology and data specialist. Use to assess software and data targets (registration, lead retrieval, floor-plan and booth sales, housing, attendee analytics), SaaS metrics, build vs. buy vs. partner decisions, technical due diligence, and data privacy exposure.
 model:
-  id: claude-opus-5-5
+  id: claude-sonnet-5-5
   effort: high
 tools:
 - type: agent_toolset_20260401

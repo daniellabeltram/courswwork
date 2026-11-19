@@ -3,7 +3,7 @@
 name: GES Labor Relations & Union Expert
 description: Union and show-floor labor specialist for the exhibition industry. Use to assess a target's union agreements and jurisdictions (stagehands, Teamsters, carpenters, electricians and others), successorship, labor costs and work rules by city, labor availability, and strike or dispute risk.
 model:
-  id: claude-opus-5-5
+  id: claude-sonnet-5-5
   effort: high
 tools:
 - type: agent_toolset_20260401

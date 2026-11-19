@@ -14,30 +14,44 @@ Every agent shares the same format and ground rules, so the M&A app can display 
 
 ## The 15 agents
 
-| Agent | Role | Ask it about |
+| Agent | Role | Model | Ask it about |
+|---|---|---|---|
+| `ma-deal-lead` | M&A Deal Lead (Corporate Development) | Opus 5.5 | **Start here.** Should we do this deal? Combines the specialists into one recommendation and investment committee memo |
+| `pe-operating-partner` | Private Equity Operating Partner | Sonnet 5.5 | Truelink's view, value creation, exit, debt capacity, MOIC/IRR |
+| `investment-banker` | Investment Banker / M&A Advisor | Sonnet 5.5 | Approaching founders, auction tactics, offer and LOI terms, timelines |
+| `valuation-analyst` | Valuation & Financial Modeling Analyst | Opus 5.5 | What it's worth, what to pay, earn-outs, sensitivities (can run Python) |
+| `qoe-accountant` | Quality of Earnings Accountant | Opus 5.5 | Are the earnings real? Add-backs, working capital, show-rotation normalization (can run Python) |
+| `ma-tax-advisor` | M&A Tax Advisor | Opus 5.5 | Asset vs. stock, rollover, earn-out tax, cross-border tax |
+| `integration-lead` | Post-Merger Integration Lead | Sonnet 5.5 | Stand-alone vs. fold-in, 100-day plan, synergies, retention |
+| `trade-show-industry-expert` | Trade Show & Exhibition Industry Expert | Sonnet 5.5 | Contractor targets, organizer and venue contracts, competitors, international markets |
+| `experiential-agency-expert` | Experiential Agency & Exhibit House Expert | Sonnet 5.5 | Agency economics, client concentration, creative talent |
+| `event-tech-expert` | Event Technology Expert | Sonnet 5.5 | Software targets, SaaS metrics, tech diligence, data privacy |
+| `labor-relations-expert` | Labor Relations & Union Expert | Sonnet 5.5 | Union agreements, jurisdictions, labor cost, strike risk |
+| `ma-attorney` | M&A Corporate Attorney | Opus 5.5 | LOI and purchase agreement terms, indemnities, change-of-control clauses, IP |
+| `antitrust-counsel` | Antitrust & Competition Counsel | Opus 5.5 | Buying competitors, filings, overlaps, clean teams |
+| `employment-benefits-counsel` | Labor, Employment & Benefits Counsel | Opus 5.5 | Pension withdrawal liability, non-competes, WARN, TUPE, retention |
+| `deal-sourcing-analyst` | Deal Sourcing & Market Research Analyst | Sonnet 5.5 (medium effort) | Finding and profiling targets, market maps, fit scores |
+
+## Why each agent uses its model
+
+Each agent runs on the least expensive model that does its job well. Opus 5.5 costs about twice as much as Sonnet 5.5 ($4 vs. $2 per million input tokens, $20 vs. $10 output).
+
+| Model | Agents | Why |
 |---|---|---|
-| `ma-deal-lead` | M&A Deal Lead (Corporate Development) | **Start here.** Should we do this deal? Combines the specialists into one recommendation and investment committee memo |
-| `pe-operating-partner` | Private Equity Operating Partner | Truelink's view, value creation, exit, debt capacity, MOIC/IRR |
-| `investment-banker` | Investment Banker / M&A Advisor | Approaching founders, auction tactics, offer and LOI terms, timelines |
-| `valuation-analyst` | Valuation & Financial Modeling Analyst | What it's worth, what to pay, earn-outs, sensitivities (can run Python) |
-| `qoe-accountant` | Quality of Earnings Accountant | Are the earnings real? Add-backs, working capital, show-rotation normalization (can run Python) |
-| `ma-tax-advisor` | M&A Tax Advisor | Asset vs. stock, rollover, earn-out tax, cross-border tax |
-| `integration-lead` | Post-Merger Integration Lead | Stand-alone vs. fold-in, 100-day plan, synergies, retention |
-| `trade-show-industry-expert` | Trade Show & Exhibition Industry Expert | Contractor targets, organizer and venue contracts, competitors, international markets |
-| `experiential-agency-expert` | Experiential Agency & Exhibit House Expert | Agency economics, client concentration, creative talent |
-| `event-tech-expert` | Event Technology Expert | Software targets, SaaS metrics, tech diligence, data privacy |
-| `labor-relations-expert` | Labor Relations & Union Expert | Union agreements, jurisdictions, labor cost, strike risk |
-| `ma-attorney` | M&A Corporate Attorney | LOI and purchase agreement terms, indemnities, change-of-control clauses, IP |
-| `antitrust-counsel` | Antitrust & Competition Counsel | Buying competitors, filings, overlaps, clean teams |
-| `employment-benefits-counsel` | Labor, Employment & Benefits Counsel | Pension withdrawal liability, non-competes, WARN, TUPE, retention |
-| `deal-sourcing-analyst` | Deal Sourcing & Market Research Analyst | Finding and profiling targets, market maps, fit scores |
+| **Claude Opus 5.5**, high effort | `ma-deal-lead`, `valuation-analyst`, `qoe-accountant`, `ma-tax-advisor`, `ma-attorney`, `antitrust-counsel`, `employment-benefits-counsel` | Mistakes here are expensive and the reasoning is hard: setting the price, spotting earnings that won't repeat, multi-country tax structures, contract and antitrust exposure, hidden pension liabilities, and weighing all the specialists' input into one go/no-go call. |
+| **Claude Sonnet 5.5**, high effort | `pe-operating-partner`, `investment-banker`, `integration-lead`, `trade-show-industry-expert`, `experiential-agency-expert`, `event-tech-expert`, `labor-relations-expert` | These apply industry knowledge and proven frameworks (deal process, integration plans, agency economics, union inventories). Sonnet handles this well at half the cost. Their numbers and legal points go to the Opus agents for the final call. |
+| **Claude Sonnet 5.5**, medium effort | `deal-sourcing-analyst` | Many web lookups and structured profiles. Medium effort keeps long research runs fast and cheap while still checking facts like ownership. |
+| Claude Haiku 5.5 | none | Considered and not used. Every agent here advises executives or has to check facts, which needs more judgment than Haiku gives. Haiku would suit future bulk jobs, such as pulling fields out of hundreds of documents. |
+| Claude Fable 5.2 | none | Anthropic's most capable model, but twice the cost of Opus and slower per answer. Worth testing on `ma-deal-lead` for final investment committee memos only if Opus's answers fall short. |
+
+To change an agent's model, edit the `model` and `effort` lines in its `.claude/agents/` file, then run `python3 scripts/sync_managed_agents.py`.
 
 ## Two versions of the same agents
 
 The agents come in two formats, built from the same prompts:
 
 | | **Claude Code subagents** | **Claude Managed Agents** |
-|---|---|---|
+|---|---|---|---|
 | Location | `.claude/agents/*.md` | `managed-agents/agents/*.md` + `managed-agents/environments/ges-ma-cloud.yaml` |
 | Best for | You, researching and prototyping in Claude Code today | The M&A app itself: your code calls them through the Claude API |
 | Who runs them | Claude Code on your machine or in a cloud session | Anthropic's managed infrastructure (beta) |
@@ -67,7 +81,7 @@ Ask the antitrust-counsel and trade-show-industry-expert whether buying a region
 Have the ma-deal-lead write an investment committee memo for acquiring Example Co, consulting whichever specialists it needs.
 ```
 
-All agents run on Opus. They can read the repo (including `docs/ges-company-research.md`), search the web, and write files such as memos. The valuation and QoE agents can also run Python for calculations.
+Each agent runs on the model listed above. They can read the repo (including `docs/ges-company-research.md`), search the web, and write files such as memos. The valuation and QoE agents can also run Python for calculations.
 
 ## Using the Managed Agents (for the app)
 
@@ -109,7 +123,7 @@ Start sessions with `ma-deal-lead` for full deal questions, or with any single s
 
 ### Settings to know about
 
-- **Model:** every agent uses `claude-opus-5-5` at `high` effort, set in `scripts/sync_managed_agents.py`.
+- **Model:** each agent uses the model and effort from its `.claude/agents/` file (see *Why each agent uses its model*). When `ma-deal-lead` delegates, each specialist runs on its own model.
 - **Team mode is on:** `ma-deal-lead` can delegate to the 14 specialists and only to them. It can also start **workflow runs**, which run many specialist copies in parallel (for example, screening a long list of targets). Every agent in a run uses tokens, so **set a session budget** when you create sessions with `ma-deal-lead`. To turn workflow runs off, change `workflows` to `{"type": "disabled"}` in the sync script.
 - **Tool approvals:** tools run under the `auto` permission policy. The server lets low-risk calls run, blocks high-risk ones, and pauses on unclear ones for your app to approve.
 - **Networking:** the environment allows unrestricted outbound access so agents can research any target's public website. To lock it down, switch `ges-ma-cloud.yaml` to `limited` networking and list approved hosts.

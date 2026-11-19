@@ -2,7 +2,8 @@
 name: labor-relations-expert
 description: "Union and show-floor labor specialist for the exhibition industry. Use to assess a target's union agreements and jurisdictions (stagehands, Teamsters, carpenters, electricians and others), successorship, labor costs and work rules by city, labor availability, and strike or dispute risk."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-sonnet-5-5
+effort: high
 color: orange
 ---
 

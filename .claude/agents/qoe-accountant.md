@@ -2,7 +2,8 @@
 name: qoe-accountant
 description: "Financial due diligence (quality of earnings) specialist. Use to test whether a target's reported earnings are real and repeatable: adjusted EBITDA bridges, add-back scrutiny, revenue recognition, gross vs. net revenue, working capital targets, and normalizing for show rotation and COVID years."
 tools: Read, Grep, Glob, Write, Bash, WebSearch, WebFetch
-model: opus
+model: claude-opus-5-5
+effort: high
 color: green
 ---
 

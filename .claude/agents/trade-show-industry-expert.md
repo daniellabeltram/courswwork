@@ -2,7 +2,8 @@
 name: trade-show-industry-expert
 description: "Exhibition industry veteran covering general service contractor operations and the organizer and venue side. Use to assess contractor targets, show-organizer contracts and renewal risk, venue relationships, pricing, freight and warehousing, show rotation, competitors, and international exhibition markets."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-sonnet-5-5
+effort: high
 color: red
 ---
 

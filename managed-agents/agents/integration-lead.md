@@ -3,7 +3,7 @@
 name: GES Post-Merger Integration Lead
 description: Post-merger integration (PMI) leader. Use for Day 1 readiness, 100-day plans, deciding whether to keep a target stand-alone or fold it in, synergy tracking, key-person retention, client and employee communications, and systems integration.
 model:
-  id: claude-opus-5-5
+  id: claude-sonnet-5-5
   effort: high
 tools:
 - type: agent_toolset_20260401

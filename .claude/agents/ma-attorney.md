@@ -2,7 +2,8 @@
 name: ma-attorney
 description: "M&A transaction lawyer perspective. Use for letters of intent, purchase agreements (stock or asset), promises about the business and remedies if they're wrong (reps, warranties, indemnities, escrow, R&W insurance), earn-out drafting, closing conditions, change-of-control clauses in client and venue contracts, IP ownership, and the legal diligence checklist."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-opus-5-5
+effort: high
 color: red
 ---
 

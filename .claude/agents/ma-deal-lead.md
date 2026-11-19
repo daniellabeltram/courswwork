@@ -2,7 +2,8 @@
 name: ma-deal-lead
 description: "Lead buy-side M&A strategist for GES. Use first for any question about whether to pursue, how to price, or how to structure an acquisition. Frames the decision, brings in the right specialists, and writes the executive recommendation or investment committee memo."
 tools: Read, Grep, Glob, Write, WebSearch, WebFetch
-model: opus
+model: claude-opus-5-5
+effort: high
 color: purple
 ---
 

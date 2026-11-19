@@ -8,7 +8,8 @@ Edit a subagent in .claude/agents/, then re-run:
 
     python3 scripts/sync_managed_agents.py
 
-Requires PyYAML (pip install pyyaml).
+Each subagent's `model` and `effort` frontmatter carry over to its
+Managed Agent. Requires PyYAML (pip install pyyaml).
 """
 import pathlib
 import sys
@@ -19,7 +20,6 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / ".claude" / "agents"
 DST = ROOT / "managed-agents" / "agents"
 
-MODEL = {"id": "claude-opus-5-5", "effort": "high"}
 COORDINATOR = "ma-deal-lead"
 
 # Managed Agents have the web tools, bash and file tools in one toolset.
@@ -75,7 +75,7 @@ def main() -> int:
         agent = {
             "name": f"GES {title}",
             "description": meta["description"],
-            "model": MODEL,
+            "model": {"id": meta["model"], "effort": meta["effort"]},
             "tools": TOOLS,
             "metadata": {"claude_code_subagent": name, "customer": "GES"},
         }

@@ -22,17 +22,51 @@ DST = ROOT / "managed-agents" / "agents"
 
 COORDINATOR = "ma-deal-lead"
 
-# Managed Agents have the web tools, bash and file tools in one toolset.
-TOOLS = [
-    {
+# Runaway limits that only apply to Managed Agents (Claude Code enforces
+# `maxTurns` from the subagent file instead). The app reads these from each
+# agent's metadata: run_session.py sets the session's dollar budget and
+# interrupts it at the time limit. Budgets are list-price USD ceilings, set
+# well above a typical run; tune them from real sessions' usage.list_cost.
+SESSION_LIMITS = {
+    # name: (max session budget USD, max session minutes)
+    "ma-deal-lead": (20, 30),
+    "deal-sourcing-analyst": (10, 30),
+    "valuation-analyst": (8, 20),
+    "qoe-accountant": (8, 20),
+    "ma-tax-advisor": (5, 15),
+    "ma-attorney": (5, 15),
+    "antitrust-counsel": (5, 15),
+    "employment-benefits-counsel": (5, 15),
+    "pe-operating-partner": (3, 12),
+    "investment-banker": (3, 12),
+    "integration-lead": (3, 12),
+    "trade-show-industry-expert": (3, 15),
+    "experiential-agency-expert": (3, 15),
+    "event-tech-expert": (3, 15),
+    "labor-relations-expert": (3, 12),
+}
+
+# Cap on text from any one fetched web page entering an agent's context.
+WEB_FETCH_MAX_TOKENS = 20000
+
+
+def toolset_for(claude_code_tools: str):
+    """Mirror the subagent's Claude Code tool list onto the Managed Agents toolset."""
+    allowed = {x.strip() for x in claude_code_tools.split(",")}
+    configs = [
+        {"name": "web_search", "enabled": "WebSearch" in allowed},
+        {"name": "web_fetch", "enabled": "WebFetch" in allowed,
+         "max_content_tokens": WEB_FETCH_MAX_TOKENS},
+        {"name": "bash", "enabled": "Bash" in allowed},
+        {"name": "write", "enabled": "Write" in allowed},
+        {"name": "edit", "enabled": "Write" in allowed},
+    ]
+    return [{
         "type": "agent_toolset_20260401",
         "default_config": {"permission_policy": {"type": "auto"}},
-        "configs": [
-            {"name": "web_search", "enabled": True},
-            {"name": "web_fetch", "enabled": True},
-        ],
-    }
-]
+        "configs": configs,
+    }]
+
 
 COORDINATOR_NOTE = """
 ## Working with the specialist team
@@ -44,6 +78,10 @@ screening a long list of companies, or profiling every contractor in a
 region), start a workflow run that assesses them in parallel and combines the
 results. For a single deal question, consult the specialists directly
 instead of starting a run.
+
+Limits on workflow runs: start at most one run per request, and give every
+run a one-hour time limit. If a run fails or is cut short, report what it
+finished and list what it did not cover rather than starting it again.
 """
 
 
@@ -76,8 +114,13 @@ def main() -> int:
             "name": f"GES {title}",
             "description": meta["description"],
             "model": {"id": meta["model"], "effort": meta["effort"]},
-            "tools": TOOLS,
-            "metadata": {"claude_code_subagent": name, "customer": "GES"},
+            "tools": toolset_for(meta["tools"]),
+            "metadata": {
+                "claude_code_subagent": name,
+                "customer": "GES",
+                "max_session_budget_usd": str(SESSION_LIMITS[name][0]),
+                "max_session_minutes": str(SESSION_LIMITS[name][1]),
+            },
         }
         if name == COORDINATOR:
             roster = [f"./{s}.md" for s in specialists]

@@ -46,6 +46,32 @@ Each agent runs on the least expensive model that does its job well. Opus 5.5 co
 
 To change an agent's model, edit the `model` and `effort` lines in its `.claude/agents/` file, then run `python3 scripts/sync_managed_agents.py`.
 
+## Runaway protection
+
+Every agent has limits so it can't run for too long or spend too much. The limits are sized from a real run: the top-10 targets search took 77 tool calls and about 10 minutes.
+
+| Agent | Max turns (Claude Code) | Web searches | Target time | Session budget / time limit (Managed Agents) |
+|---|---|---|---|---|
+| `ma-deal-lead` | 50 | 25 | 20 min | $20 / 30 min, shared by every specialist it consults |
+| `deal-sourcing-analyst` | 80 | 60 | 20 min | $10 / 30 min |
+| `valuation-analyst`, `qoe-accountant` | 30 | 10 / 6 | 15 min | $8 / 20 min |
+| `ma-tax-advisor`, `ma-attorney`, `employment-benefits-counsel` | 20 | 10 | 10 min | $5 / 15 min |
+| `antitrust-counsel` | 25 | 12 | 10 min | $5 / 15 min |
+| `trade-show-industry-expert`, `experiential-agency-expert`, `event-tech-expert` | 25 | 15 | 10 min | $3 / 15 min |
+| `pe-operating-partner`, `investment-banker`, `integration-lead`, `labor-relations-expert` | 20 | 8 / 8 / 6 / 12 | 8 min | $3 / 12 min |
+
+How the limits work:
+
+- **Hard turn cap (Claude Code):** `maxTurns` in each subagent file. At the cap, Claude Code stops the agent and returns its work marked as partial. Claude can resume it if more is needed.
+- **Hard dollar cap (Managed Agents):** each agent's `max_session_budget_usd`. `run_session.py` sets it as the session budget. The platform pauses the session when list-price spend reaches it (counting tokens, web searches at $10 per 1,000, and running time).
+- **Time limit (Managed Agents):** each agent's `max_session_minutes`. `run_session.py` sends an interrupt at the limit, so the agent stops at the next safe point.
+- **Work budget in every prompt:** each agent knows its tool-call, search and time budget, and is told to plan before searching, stop once more research wouldn't change the answer, retry a failing page only once, never loop, and deliver a partial answer on time rather than nothing.
+- **Smaller pages:** in Managed Agents, each fetched web page is capped at 20,000 tokens of text so one long page can't flood an agent's context.
+- **Team limits:** `ma-deal-lead` consults only the two to five specialists a decision needs. It starts at most one workflow run per request and gives every run a one-hour time limit, well under the platform's 24-hour default.
+- **Least privilege:** only the agents that produce files (`ma-deal-lead`, `deal-sourcing-analyst`, `valuation-analyst`, `qoe-accountant`, `integration-lead`) can write files, and only `valuation-analyst` and `qoe-accountant` can run code. In unattended Managed Agents runs, `run_session.py` denies any tool call the server flags for approval.
+
+The budgets are list-price ceilings set well above a typical run. Tune them from real sessions' `usage.list_cost` in the Console. To change a limit, edit `maxTurns` or the work-limits lines in the agent's `.claude/agents/` file, or `SESSION_LIMITS` in `scripts/sync_managed_agents.py`, then re-run the sync script.
+
 ## Two versions of the same agents
 
 The agents come in two formats, built from the same prompts:
@@ -107,24 +133,22 @@ cd managed-agents && ant apply agents environments
 
 This creates 15 agents and one cloud environment. It writes their IDs to `managed-agents/claude-lock.json`, which you should commit. Re-running `ant apply` after an edit updates the agents in place and creates a new version, rather than creating duplicates.
 
-**4. Start a session from your app** with the IDs in `claude-lock.json`. For example, from the shell:
+**4. Run a session with the limits applied.** `run_session.py` reads the agent and environment IDs from `claude-lock.json`, sets the agent's dollar budget, interrupts it at its time limit, and prints the answer:
 
 ```bash
-cd managed-agents
-AGENT_ID=$(jq -r '.resources["./agents/ma-deal-lead.md"].id' claude-lock.json)
-ENV_ID=$(jq -r '.resources["./environments/ges-ma-cloud.yaml"].id' claude-lock.json)
-SID=$(ant beta:sessions create --agent "$AGENT_ID" --environment-id "$ENV_ID" --title "Deal screen" --transform id -r)
-ant beta:sessions:events send --session-id "$SID" \
-  --event '{type: user.message, content: [{type: text, text: "Screen Example Co as an add-on for GES."}]}'
-ant beta:sessions:events stream --session-id "$SID"
+pip install anthropic pyyaml
 ```
 
-Start sessions with `ma-deal-lead` for full deal questions, or with any single specialist's agent ID for a focused question.
+```bash
+cd managed-agents && python3 run_session.py ma-deal-lead "Screen Example Co as an add-on for GES."
+```
+
+Use `ma-deal-lead` for full deal questions, or any specialist's name for a focused question. Your app can use the same pattern: create the session with a `budget`, stream events, and send `user.interrupt` at the time limit.
 
 ### Settings to know about
 
 - **Model:** each agent uses the model and effort from its `.claude/agents/` file (see *Why each agent uses its model*). When `ma-deal-lead` delegates, each specialist runs on its own model.
-- **Team mode is on:** `ma-deal-lead` can delegate to the 14 specialists and only to them. It can also start **workflow runs**, which run many specialist copies in parallel (for example, screening a long list of targets). Every agent in a run uses tokens, so **set a session budget** when you create sessions with `ma-deal-lead`. To turn workflow runs off, change `workflows` to `{"type": "disabled"}` in the sync script.
+- **Team mode is on:** `ma-deal-lead` can delegate to the 14 specialists and only to them. It can also start **workflow runs**, which run many specialist copies in parallel (for example, screening a long list of targets). Every agent in a run uses tokens. `run_session.py` always sets a session budget. To turn workflow runs off, change `workflows` to `{"type": "disabled"}` in the sync script.
 - **Tool approvals:** tools run under the `auto` permission policy. The server lets low-risk calls run, blocks high-risk ones, and pauses on unclear ones for your app to approve.
 - **Networking:** the environment allows unrestricted outbound access so agents can research any target's public website. To lock it down, switch `ges-ma-cloud.yaml` to `limited` networking and list approved hosts.
 - **Confidential data:** don't upload real data-room material until GES has approved the data handling. Managed Agents is not eligible for Zero Data Retention.
